@@ -71,9 +71,7 @@ abstract class ConnectionPool extends Component
      */
     protected function createConnection()
     {
-        $connection = $this->dial->handle();
-        $connection->connectionPool = $this;
-        return $connection;
+        return $this->dial->handle();
     }
 
     /**
@@ -91,7 +89,7 @@ abstract class ConnectionPool extends Component
             $connection = $this->createConnection();
         }
         // 标记
-        $id = spl_object_hash($connection);
+        $id               = spl_object_hash($connection);
         $this->_hash[$id] = 1;
         // 加活动数
         $this->_actives++;
@@ -114,13 +112,18 @@ abstract class ConnectionPool extends Component
         if ($this->_hash[$id] === 0) {
             return false;
         }
+        // 入列
+        $success = $this->push($connection);
         // 标记
-        $id = spl_object_hash($connection);
-        $this->_hash[$id] = 0;
-        // 入列并减活动数
-        $this->push($connection);
+        if ($success) {
+            $id               = spl_object_hash($connection);
+            $this->_hash[$id] = 0;
+        } else {
+            unset($this->_hash[$id]);
+        }
+        // 减活动数
         $this->_actives--;
-        return true;
+        return $success;
     }
 
     /**
