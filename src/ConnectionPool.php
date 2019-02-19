@@ -7,8 +7,8 @@ use Mix\Core\Component\ComponentInterface;
 
 /**
  * Class ConnectionPool
- * @author LIUJIAN <coder.keda@gmail.com>
  * @package Mix\Pool
+ * @author LIUJIAN <coder.keda@gmail.com>
  */
 abstract class ConnectionPool extends Component
 {
@@ -71,7 +71,9 @@ abstract class ConnectionPool extends Component
      */
     protected function createConnection()
     {
-        return $this->dial->handle();
+        $connection                 = $this->dial->handle();
+        $connection->connectionPool = $this;
+        return $connection;
     }
 
     /**
