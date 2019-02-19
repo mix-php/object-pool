@@ -2,7 +2,7 @@
 
 namespace Mix\Pool;
 
-use Mix\Core\Coroutine\Coroutine;
+use Mix\Core\Coroutine;
 
 /**
  * Trait ConnectionTrait

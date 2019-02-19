@@ -2,15 +2,15 @@
 
 namespace Mix\Pool;
 
-use Mix\Core\Component\Component;
+use Mix\Core\Component\AbstractComponent;
 use Mix\Core\Component\ComponentInterface;
 
 /**
- * Class ConnectionPool
+ * Class AbstractConnectionPool
  * @package Mix\Pool
  * @author LIUJIAN <coder.keda@gmail.com>
  */
-abstract class ConnectionPool extends Component
+abstract class AbstractConnectionPool extends AbstractComponent
 {
 
     /**
