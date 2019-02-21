@@ -4,7 +4,6 @@ namespace Mix\Pool;
 
 use Mix\Core\Component\AbstractComponent;
 use Mix\Core\Component\ComponentInterface;
-use Mix\Helpers\ProcessHelper;
 
 /**
  * Class AbstractConnectionPool
