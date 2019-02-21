@@ -4,6 +4,7 @@ namespace Mix\Pool;
 
 use Mix\Core\Component\AbstractComponent;
 use Mix\Core\Component\ComponentInterface;
+use Mix\Helpers\ProcessHelper;
 
 /**
  * Class AbstractConnectionPool
@@ -44,16 +45,10 @@ abstract class AbstractConnectionPool extends AbstractComponent
     protected $_queue;
 
     /**
-     * 连接的hashid
+     * 活跃连接集合
      * @var array
      */
-    protected $_hash;
-
-    /**
-     * 活跃连接集合
-     * @var int
-     */
-    protected $_actives = 0;
+    protected $_actives = [];
 
     /**
      * 初始化事件
@@ -90,11 +85,10 @@ abstract class AbstractConnectionPool extends AbstractComponent
             // 创建连接
             $connection = $this->createConnection();
         }
-        // 标记
-        $id               = spl_object_hash($connection);
-        $this->_hash[$id] = 1;
-        // 加活动数
-        $this->_actives++;
+        // 登记
+        $id                  = spl_object_hash($connection);
+        $this->_actives[$id] = $connection;
+        // 返回
         return $connection;
     }
 
@@ -105,27 +99,15 @@ abstract class AbstractConnectionPool extends AbstractComponent
      */
     public function release($connection)
     {
-        // 判断是否已丢弃
         $id = spl_object_hash($connection);
-        if (!isset($this->_hash[$id])) {
-            return false;
-        }
         // 判断是否已释放
-        if ($this->_hash[$id] === 0) {
+        if (!isset($this->_actives[$id])) {
             return false;
         }
+        // 移除登记
+        unset($this->_actives[$id]); // 注意：必须是先减 actives，否则会 maxActive - maxIdle <= 1 时会阻塞
         // 入列
-        $success = $this->push($connection);
-        // 标记
-        if ($success) {
-            $id               = spl_object_hash($connection);
-            $this->_hash[$id] = 0;
-        } else {
-            unset($this->_hash[$id]);
-        }
-        // 减活动数
-        $this->_actives--;
-        return $success;
+        return $this->push($connection);
     }
 
     /**
@@ -135,15 +117,14 @@ abstract class AbstractConnectionPool extends AbstractComponent
      */
     public function discard($connection)
     {
-        // 判断是否已丢弃
         $id = spl_object_hash($connection);
-        if (!isset($this->_hash[$id])) {
+        // 判断是否已丢弃
+        if (!isset($this->_actives[$id])) {
             return false;
         }
-        // 移除标记
-        unset($this->_hash[$id]);
-        // 减活动数
-        $this->_actives--;
+        // 移除登记
+        unset($this->_actives[$id]);
+        // 返回
         return true;
     }
 
@@ -198,7 +179,7 @@ abstract class AbstractConnectionPool extends AbstractComponent
      */
     protected function getActiveNumber()
     {
-        return $this->_actives;
+        return count($this->_actives);
     }
 
     /**
