@@ -7,7 +7,7 @@ use Mix\Core\Coroutine;
 /**
  * Trait ConnectionTrait
  * @package Mix\Pool
- * @author LIUJIAN <coder.keda@gmail.com>
+ * @author liu,jian <coder.keda@gmail.com>
  */
 trait ConnectionTrait
 {

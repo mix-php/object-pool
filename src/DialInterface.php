@@ -5,7 +5,7 @@ namespace Mix\Pool;
 /**
  * Interface DialInterface
  * @package Mix\Pool
- * @author LIUJIAN <coder.keda@gmail.com>
+ * @author liu,jian <coder.keda@gmail.com>
  */
 interface DialInterface
 {

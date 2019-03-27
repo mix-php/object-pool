@@ -9,7 +9,7 @@ use Mix\Core\Coroutine\Channel;
 /**
  * Class AbstractConnectionPool
  * @package Mix\Pool
- * @author LIUJIAN <coder.keda@gmail.com>
+ * @author liu,jian <coder.keda@gmail.com>
  */
 abstract class AbstractConnectionPool extends AbstractComponent
 {
