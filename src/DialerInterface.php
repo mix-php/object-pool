@@ -3,17 +3,17 @@
 namespace Mix\Pool;
 
 /**
- * Interface DialInterface
+ * Interface DialerInterface
  * @package Mix\Pool
  * @author liu,jian <coder.keda@gmail.com>
  */
-interface DialInterface
+interface DialerInterface
 {
 
     /**
-     * 处理
+     * 拨号
      * @return mixed
      */
-    public function handle();
+    public function dial();
 
 }

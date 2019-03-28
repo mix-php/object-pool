@@ -33,10 +33,10 @@ abstract class AbstractConnectionPool extends AbstractComponent
     public $maxActive = 5;
 
     /**
-     * 拨号依赖引用
-     * @var \Mix\Pool\DialInterface
+     * 拨号器
+     * @var \Mix\Pool\DialerInterface
      */
-    public $dial;
+    public $dialer;
 
     /**
      * 连接队列
@@ -66,7 +66,7 @@ abstract class AbstractConnectionPool extends AbstractComponent
      */
     protected function createConnection()
     {
-        $connection                 = $this->dial->handle();
+        $connection                 = $this->dialer->dial();
         $connection->connectionPool = $this;
         return $connection;
     }
