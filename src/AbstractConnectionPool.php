@@ -18,7 +18,7 @@ abstract class AbstractConnectionPool extends AbstractComponent
      * 协程模式
      * @var int
      */
-    public static $coroutineMode = ComponentInterface::COROUTINE_MODE_REFERENCE;
+    const COROUTINE_MODE = ComponentInterface::COROUTINE_MODE_REFERENCE;
 
     /**
      * 最多可空闲连接数
