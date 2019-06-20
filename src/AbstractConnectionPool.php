@@ -4,7 +4,7 @@ namespace Mix\Pool;
 
 use Mix\Core\Component\AbstractComponent;
 use Mix\Core\Component\ComponentInterface;
-use Mix\Core\Coroutine\Channel;
+use Mix\Concurrent\Coroutine\Channel;
 
 /**
  * Class AbstractConnectionPool
@@ -40,7 +40,7 @@ abstract class AbstractConnectionPool extends AbstractComponent
 
     /**
      * 连接队列
-     * @var \Mix\Core\Coroutine\Channel
+     * @var \Mix\Concurrent\Coroutine\Channel
      */
     protected $_queue;
 
