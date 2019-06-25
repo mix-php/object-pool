@@ -3,7 +3,7 @@
 namespace Mix\Pool;
 
 use Mix\Component\AbstractComponent;
-use Mix\Core\Component\ComponentInterface;
+use Mix\Component\ComponentInterface;
 use Mix\Concurrent\Coroutine\Channel;
 
 /**
