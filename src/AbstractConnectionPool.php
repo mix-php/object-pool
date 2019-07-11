@@ -44,21 +44,15 @@ abstract class AbstractConnectionPool
     protected $_actives = [];
 
     /**
-     * Authorization constructor.
+     * AbstractConnectionPool constructor.
      * @param array $config
+     * @throws \PhpDocReader\AnnotationException
+     * @throws \ReflectionException
      */
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         BeanInjector::inject($this, $config);
-        $this->init();
-    }
-
-    /**
-     * 初始化
-     */
-    public function init()
-    {
-        // 创建协程队列
+        // 创建连接队列
         $this->_queue = new Channel($this->maxIdle);
     }
 
