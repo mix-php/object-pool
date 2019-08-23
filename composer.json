@@ -1,6 +1,6 @@
 {
   "name": "mix/pool",
-  "description": "MixPHP 框架模块 http://www.mixphp.cn",
+  "description": "Mix Pool http://www.mixphp.cn",
   "type": "framework",
   "keywords": [
     "framework",
@@ -17,7 +17,8 @@
   ],
   "require": {
     "php": ">=7.0.0",
-    "mix/framework": "v2.1.x-dev"
+    "mix/bean": "v2.1.x-dev",
+    "mix/concurrent": "v2.1.x-dev"
   },
   "autoload": {
     "psr-4": {
