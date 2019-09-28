@@ -3,7 +3,7 @@
 namespace Mix\Pool;
 
 use Mix\Bean\BeanInjector;
-use Mix\Concurrent\Coroutine\Channel;
+use Swoole\Coroutine\Channel;
 
 /**
  * Class AbstractConnectionPool
