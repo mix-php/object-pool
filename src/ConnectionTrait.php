@@ -2,8 +2,6 @@
 
 namespace Mix\Pool;
 
-use Mix\Concurrent\Coroutine;
-
 /**
  * Trait ConnectionTrait
  * @package Mix\Pool
@@ -13,9 +11,9 @@ trait ConnectionTrait
 {
 
     /**
-     * @var \Mix\Pool\ConnectionPoolInterface
+     * @var ConnectionPoolInterface
      */
-    public $connectionPool;
+    public $pool;
 
     /**
      * 丢弃连接
@@ -23,8 +21,8 @@ trait ConnectionTrait
      */
     public function discard()
     {
-        if (isset($this->connectionPool)) {
-            $this->connectionPool->discard($this);
+        if (isset($this->pool)) {
+            $this->pool->discard($this);
         }
         return false;
     }
@@ -35,8 +33,8 @@ trait ConnectionTrait
      */
     public function release()
     {
-        if (isset($this->connectionPool)) {
-            return $this->connectionPool->release($this);
+        if (isset($this->pool)) {
+            return $this->pool->release($this);
         }
         return false;
     }

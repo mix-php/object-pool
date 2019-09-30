@@ -12,7 +12,7 @@ interface DialerInterface
 
     /**
      * 拨号
-     * @return mixed
+     * @return ConnectionTrait
      */
     public function dial();
 

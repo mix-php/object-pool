@@ -62,8 +62,8 @@ abstract class AbstractConnectionPool
      */
     protected function createConnection()
     {
-        $connection                 = $this->dialer->dial();
-        $connection->connectionPool = $this;
+        $connection       = $this->dialer->dial();
+        $connection->pool = $this;
         return $connection;
     }
 
