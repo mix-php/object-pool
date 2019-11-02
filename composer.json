@@ -17,8 +17,8 @@
   ],
   "require": {
     "php": ">=7.0.0",
-    "mix/bean": "v2.1.0-RC",
-    "mix/concurrent": "v2.1.0-RC"
+    "mix/bean": "v2.1.0-RC2",
+    "mix/concurrent": "v2.1.0-RC2"
   },
   "autoload": {
     "psr-4": {
