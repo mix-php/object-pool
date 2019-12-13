@@ -22,7 +22,7 @@ trait ConnectionTrait
     public function discard()
     {
         if (isset($this->pool)) {
-            $this->pool->discard($this);
+            return $this->pool->discard($this);
         }
         return false;
     }
