@@ -3,6 +3,8 @@
 namespace Mix\Pool;
 
 use Mix\Bean\BeanInjector;
+use Mix\Pool\Event\ConnectionDiscardedEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Coroutine\Channel;
 
 /**
@@ -30,6 +32,12 @@ abstract class AbstractConnectionPool
      * @var DialerInterface
      */
     public $dialer;
+
+    /**
+     * 事件调度器
+     * @var EventDispatcherInterface
+     */
+    public $eventDispatcher;
 
     /**
      * 连接队列
@@ -120,7 +128,8 @@ abstract class AbstractConnectionPool
         }
         // 移除登记
         unset($this->_actives[$id]);
-        // 返回
+        // 触发事件
+        $this->eventDispatcher->dispatch(new ConnectionDiscardedEvent($connection));
         return true;
     }
 
