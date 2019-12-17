@@ -129,7 +129,7 @@ abstract class AbstractConnectionPool
         // 移除登记
         unset($this->_actives[$id]);
         // 触发事件
-        $this->eventDispatcher->dispatch(new ConnectionDiscardedEvent($connection));
+        $this->eventDispatcher and $this->eventDispatcher->dispatch(new ConnectionDiscardedEvent($connection));
         return true;
     }
 
