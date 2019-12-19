@@ -66,13 +66,15 @@ abstract class AbstractConnectionPool
 
     /**
      * 创建连接
-     * @return mixed
+     * @return \Closure
      */
     protected function createConnection()
     {
-        $connection       = $this->dialer->dial();
-        $connection->pool = $this;
-        return $connection;
+        return function () {
+            $connection       = $this->dialer->dial();
+            $connection->pool = $this;
+            return $connection;
+        };
     }
 
     /**
@@ -87,7 +89,15 @@ abstract class AbstractConnectionPool
             $connection = $this->pop();
         } else {
             // 创建连接
-            $connection = $this->createConnection();
+            // 连接创建时会挂起当前协程，导致 actives 未增加，因此需先 actives++ 连接创建成功后 actives--
+            $closure             = $this->createConnection();
+            $id                  = spl_object_hash($closure);
+            $this->_actives[$id] = '';
+            try {
+                $connection = call_user_func($closure);
+            } finally {
+                unset($this->_actives[$id]);
+            }
         }
         // 登记
         $id                  = spl_object_hash($connection);
