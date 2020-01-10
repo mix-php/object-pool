@@ -66,20 +66,29 @@ abstract class AbstractConnectionPool
 
     /**
      * 创建连接
-     * @return \Closure
+     * @return object
      */
     protected function createConnection()
     {
-        return function () {
+        // 连接创建时会挂起当前协程，导致 actives 未增加，因此需先 actives++ 连接创建成功后 actives--
+        $closure             = function () {
             $connection       = $this->dialer->dial();
             $connection->pool = $this;
             return $connection;
         };
+        $id                  = spl_object_hash($closure);
+        $this->_actives[$id] = '';
+        try {
+            $connection = call_user_func($closure);
+        } finally {
+            unset($this->_actives[$id]);
+        }
+        return $connection;
     }
 
     /**
      * 获取连接
-     * @return mixed
+     * @return object
      */
     public function getConnection()
     {
@@ -89,19 +98,11 @@ abstract class AbstractConnectionPool
             $connection = $this->pop();
         } else {
             // 创建连接
-            // 连接创建时会挂起当前协程，导致 actives 未增加，因此需先 actives++ 连接创建成功后 actives--
-            $closure             = $this->createConnection();
-            $id                  = spl_object_hash($closure);
-            $this->_actives[$id] = '';
-            try {
-                $connection = call_user_func($closure);
-            } finally {
-                unset($this->_actives[$id]);
-            }
+            $connection = $this->createConnection();
+            // 登记
+            $id                  = spl_object_hash($connection);
+            $this->_actives[$id] = ''; // 不可保存外部连接的引用，否则导致外部连接不析构
         }
-        // 登记
-        $id                  = spl_object_hash($connection);
-        $this->_actives[$id] = ''; // 不可保存外部连接的引用，否则导致外部连接不析构
         // 返回
         return $connection;
     }
@@ -137,10 +138,13 @@ abstract class AbstractConnectionPool
             return false;
         }
         // 移除登记
-        unset($this->_actives[$id]);
+        unset($this->_actives[$id]); // 注意：必须是先减 actives，否则会 maxActive - maxIdle <= 1 时会阻塞
+        // 入列一个新连接替代丢弃的连接
+        $result = $this->push($this->createConnection());
         // 触发事件
         $this->eventDispatcher and $this->eventDispatcher->dispatch(new ConnectionDiscardedEvent($connection));
-        return true;
+        // 返回
+        return $result;
     }
 
     /**
